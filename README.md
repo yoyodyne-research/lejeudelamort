@@ -9,6 +9,7 @@ You need a Python 3.7 build for the Bela to get the correct `asyncio`.
     python osc.py
 
 ## Inspecting I2C
-
-   i2cdetect -y -r 1
-   i2cdetect -y -r 2
+```
+i2cdetect -y -r 1
+i2cdetect -y -r 2
+```
