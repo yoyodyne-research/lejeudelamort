@@ -1,0 +1,14 @@
+
+[Unit]
+Description=Yoyodyne Neotrellis OSC service
+After=network.target
+
+[Service]
+Type=simple
+#ExecStart=/bin/pwd
+ExecStart=/root/lejeudelamort/osc
+WorkingDirectory=/root/lejeudelamort
+
+[Install]
+WantedBy=multi-user.target
+

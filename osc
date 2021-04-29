@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+echo starting...
+
+if [ ${VIRTUAL_ENV}empty != empty ]
+then
+	echo This command is meant to be run outside the venv.
+	echo Aborting.
+	exit 100
+fi
+
+venv/bin/python osc.py
+
