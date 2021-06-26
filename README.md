@@ -1,3 +1,5 @@
+An OSC server that drives an Adafruit Neotrellis.
+
 This guy is specially wired to work with
 
 https://github.com/yoyodyne-research/gameofdeath
