@@ -6,7 +6,7 @@ After=network.target
 [Service]
 Type=simple
 #ExecStart=/bin/pwd
-ExecStart=/root/lejeudelamort/osc
+ExecStart=/root/lejeudelamort/server
 WorkingDirectory=/root/lejeudelamort
 
 [Install]
