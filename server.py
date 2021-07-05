@@ -28,33 +28,27 @@ port = 65002
 client = udp_client.SimpleUDPClient(ip, port)
 sleeptime = 0.01
 enabled = True
-
-i2c_bus = busio.I2C(settings.SCL, settings.SDA)
+COLOR_OFF = (0, 0, 0)
+COLOR_BORN = (0, 192, 0)
+COLOR_ALIVE = (0, 63, 0)
+COLOR_STARTUP = (63, 63, 63)
+palette = [COLOR_OFF, COLOR_ALIVE, COLOR_BORN]
 
 # create the trellis
+i2c_bus = busio.I2C(settings.SCL, settings.SDA)
 trellis = NeoTrellis(i2c_bus)
-
-# some color definitions
-OFF = (0, 0, 0)
-RED = (255, 0, 0)
-YELLOW = (255, 150, 0)
-GREEN = (0, 255, 0)
-CYAN = (0, 255, 255)
-BLUE = (0, 0, 255)
-PURPLE = (180, 0, 255)
-palette = [OFF, BLUE, CYAN]
 
 # this will be called when button events are received
 def blink(event):
     address = "/1/push{}".format(event.number+1)
     # turn the LED on when a rising edge is detected
     if event.edge == NeoTrellis.EDGE_RISING:
-        trellis.pixels[event.number] = GREEN
+        trellis.pixels[event.number] = palette[2]
         print('sending 1 to {}'.format(address))
         client.send_message(address, 1)
     # turn the LED off when a rising edge is detected
     elif event.edge == NeoTrellis.EDGE_FALLING:
-        trellis.pixels[event.number] = OFF
+        trellis.pixels[event.number] = palette[0]
         print('sending 0 to {}'.format(address))
         client.send_message(address, 0)
 
@@ -76,11 +70,11 @@ for i in range(16):
     trellis.callbacks[i] = blink
 
     # cycle the LEDs on startup
-    trellis.pixels[i] = PURPLE
+    trellis.pixels[i] = COLOR_STARTUP
     time.sleep(0.05)
 
 for i in range(16):
-    trellis.pixels[i] = OFF
+    trellis.pixels[i] = palette[0]
     time.sleep(0.05)
 
 dispatcher = dispatcher.Dispatcher()
