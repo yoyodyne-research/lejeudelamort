@@ -53,12 +53,13 @@ def blink(event):
         client.send_message(address, 0)
 
 
-def default_handler(addr, args):
+def default_handler(addr, r, g, b):
     if not enabled:
         return
     #print('received {} destined for {}'.format(args, addr))
     i = int(re.match('/1/push(\d+)', addr).groups()[0]) - 1
-    trellis.pixels[i] = palette[args]
+    c = (int(r * 255), int(g * 255), int(b * 255)) 
+    trellis.pixels[i] = c
 
 
 for i in range(16):
