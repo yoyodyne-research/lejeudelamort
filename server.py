@@ -17,6 +17,7 @@ from adafruit_blinka.board.beagleboard import beaglebone_black
 from pythonosc import dispatcher
 from pythonosc import osc_server
 from pythonosc import udp_client
+import murica
 
 sys.path.append('.')
 import settings
@@ -33,8 +34,15 @@ enabled = True
 i2c_bus = busio.I2C(settings.SCL, settings.SDA)
 trellis = NeoTrellis(i2c_bus)
 
-# this will be called when button events are received
+
+def salute():
+    murica.raise_flag(trellis)
+    time.sleep(2)
+    murica.lower_flag(trellis)
+
+
 def blink(event):
+    # this will be called when button events are received
     address = "/1/push{}".format(event.number+1)
     # turn the LED on when a rising edge is detected
     if event.edge == NeoTrellis.EDGE_RISING:
@@ -57,21 +65,22 @@ def default_handler(addr, r, g, b):
     trellis.pixels[i] = c
 
 
-for i in range(16):
-    # activate rising edge events on all keys
-    trellis.activate_key(i, NeoTrellis.EDGE_RISING)
-    # activate falling edge events on all keys
-    trellis.activate_key(i, NeoTrellis.EDGE_FALLING)
-    # set all keys to trigger the blink callback
-    trellis.callbacks[i] = blink
+def start_old():
+    for i in range(16):
+        # activate rising edge events on all keys
+        trellis.activate_key(i, NeoTrellis.EDGE_RISING)
+        # activate falling edge events on all keys
+        trellis.activate_key(i, NeoTrellis.EDGE_FALLING)
+        # set all keys to trigger the blink callback
+        trellis.callbacks[i] = blink
 
-    # cycle the LEDs on startup
-    trellis.pixels[i] = (0,100,200)
-    time.sleep(0.05)
+        # cycle the LEDs on startup
+        trellis.pixels[i] = (0,100,200)
+        time.sleep(0.05)
 
-for i in range(16):
-    trellis.pixels[i] = (0,0,0)
-    time.sleep(0.05)
+    for i in range(16):
+        trellis.pixels[i] = (0,0,0)
+        time.sleep(0.05)
 
 dispatcher = dispatcher.Dispatcher()
 dispatcher.set_default_handler(default_handler)
@@ -98,5 +107,5 @@ async def init_main():
 ip = "0.0.0.0"
 port = 65001
 
+salute()
 asyncio.run(init_main())
-
