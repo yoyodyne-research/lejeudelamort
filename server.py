@@ -28,11 +28,6 @@ port = 65002
 client = udp_client.SimpleUDPClient(ip, port)
 sleeptime = 0.01
 enabled = True
-COLOR_OFF = (0, 0, 0)
-COLOR_BORN = (0, 192, 0)
-COLOR_ALIVE = (0, 63, 0)
-COLOR_STARTUP = (63, 63, 63)
-palette = [COLOR_OFF, COLOR_ALIVE, COLOR_BORN]
 
 # create the trellis
 i2c_bus = busio.I2C(settings.SCL, settings.SDA)
@@ -43,12 +38,12 @@ def blink(event):
     address = "/1/push{}".format(event.number+1)
     # turn the LED on when a rising edge is detected
     if event.edge == NeoTrellis.EDGE_RISING:
-        trellis.pixels[event.number] = palette[2]
+        trellis.pixels[event.number] = (200,200,200)
         print('sending 1 to {}'.format(address))
         client.send_message(address, 1)
     # turn the LED off when a rising edge is detected
     elif event.edge == NeoTrellis.EDGE_FALLING:
-        trellis.pixels[event.number] = palette[0]
+        trellis.pixels[event.number] = (0,0,0)
         print('sending 0 to {}'.format(address))
         client.send_message(address, 0)
 
@@ -71,11 +66,11 @@ for i in range(16):
     trellis.callbacks[i] = blink
 
     # cycle the LEDs on startup
-    trellis.pixels[i] = COLOR_STARTUP
+    trellis.pixels[i] = (0,100,200)
     time.sleep(0.05)
 
 for i in range(16):
-    trellis.pixels[i] = palette[0]
+    trellis.pixels[i] = (0,0,0)
     time.sleep(0.05)
 
 dispatcher = dispatcher.Dispatcher()
@@ -93,7 +88,7 @@ async def loop():
 async def init_main():
     server = osc_server.AsyncIOOSCUDPServer((ip, port), dispatcher, asyncio.get_event_loop())
     transport, protocol = await server.create_serve_endpoint()  # Create datagram endpoint and start serving
-    print(transport, protocol)
+    #print(transport, protocol)
 
     await loop()  # Enter main loop of program
 
