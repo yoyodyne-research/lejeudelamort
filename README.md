@@ -4,9 +4,10 @@ This guy is specially wired to work with
 
 https://github.com/yoyodyne-research/gameofdeath
 
-You need a Python 3.7 build for the Bela to get the correct `asyncio`.
+You need Python 3.7 or later for the Bela to get the correct `asyncio`.
+Say you put that Python at /opt/python .
 
-    virtualenv -p /opt/python3.7/python3 venv
+    virtualenv -p /opt/python/bin/python3 venv
     . venv/bin/activate
     pip install -r requirements.txt
     python osc.py
