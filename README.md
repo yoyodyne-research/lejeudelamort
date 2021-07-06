@@ -9,8 +9,8 @@ Say you put that Python at /opt/python .
 
     virtualenv -p /opt/python/bin/python3 venv
     . venv/bin/activate
-    pip install -r requirements.txt
-    python osc.py
+    pip3 install -r requirements.txt
+    python3 server.py
 
 ## Inspecting I2C
 ```
