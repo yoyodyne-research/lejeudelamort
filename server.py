@@ -39,21 +39,9 @@ enabled = True
 
 def salute():
     murica.raise_flag(trellis)
-    time.sleep(2)
+    time.sleep(1)
     murica.lower_flag(trellis)
-    time.sleep(2)
-    murica.raise_flag(trellis)
-    time.sleep(2)
-    murica.lower_flag(trellis)
-    time.sleep(2)
-    murica.raise_flag(trellis)
-    time.sleep(2)
-    murica.lower_flag(trellis)
-    time.sleep(2)
-    murica.raise_flag(trellis)
-    time.sleep(2)
-    murica.lower_flag(trellis)
-    time.sleep(2)
+    time.sleep(1)
 
 def blink(event):
     # this will be called when button events are received
