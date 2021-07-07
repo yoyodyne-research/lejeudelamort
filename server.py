@@ -24,22 +24,36 @@ import settings
 sys.path.pop()
 
 #ip = "192.168.1.65"  # nori
-ip = "192.168.1.71"  # bela
-port = 65002
+
+#ip = "192.168.1.71"  # bela
+#port = 65002
+
+ip = "0.0.0.0"        # localhost
+port = 65001
+
+# create the trellis
 client = udp_client.SimpleUDPClient(ip, port)
 sleeptime = 0.01
 enabled = True
-
-# create the trellis
-i2c_bus = busio.I2C(settings.SCL, settings.SDA)
-trellis = NeoTrellis(i2c_bus)
 
 
 def salute():
     murica.raise_flag(trellis)
     time.sleep(2)
     murica.lower_flag(trellis)
-
+    time.sleep(2)
+    murica.raise_flag(trellis)
+    time.sleep(2)
+    murica.lower_flag(trellis)
+    time.sleep(2)
+    murica.raise_flag(trellis)
+    time.sleep(2)
+    murica.lower_flag(trellis)
+    time.sleep(2)
+    murica.raise_flag(trellis)
+    time.sleep(2)
+    murica.lower_flag(trellis)
+    time.sleep(2)
 
 def blink(event):
     # this will be called when button events are received
@@ -59,31 +73,9 @@ def blink(event):
 def default_handler(addr, r, g, b):
     if not enabled:
         return
-    #print('received {} destined for {}'.format(args, addr))
     i = int(re.match('/1/push(\d+)', addr).groups()[0]) - 1
-    c = (int(r * 255), int(g * 255), int(b * 255)) 
+    c = (int(r * 150), int(g * 150), int(b * 150)) 
     trellis.pixels[i] = c
-
-
-def start_old():
-    for i in range(16):
-        # activate rising edge events on all keys
-        trellis.activate_key(i, NeoTrellis.EDGE_RISING)
-        # activate falling edge events on all keys
-        trellis.activate_key(i, NeoTrellis.EDGE_FALLING)
-        # set all keys to trigger the blink callback
-        trellis.callbacks[i] = blink
-
-        # cycle the LEDs on startup
-        trellis.pixels[i] = (0,100,200)
-        time.sleep(0.05)
-
-    for i in range(16):
-        trellis.pixels[i] = (0,0,0)
-        time.sleep(0.05)
-
-dispatcher = dispatcher.Dispatcher()
-dispatcher.set_default_handler(default_handler)
 
 
 async def loop():
@@ -91,21 +83,22 @@ async def loop():
         # call the sync function call any triggered callbacks
         trellis.sync()
         # the trellis can only be read every 17 milliseconds or so
-        await asyncio.sleep(0.01)
+        await asyncio.sleep(0.016)
 
 
 async def init_main():
     server = osc_server.AsyncIOOSCUDPServer((ip, port), dispatcher, asyncio.get_event_loop())
     transport, protocol = await server.create_serve_endpoint()  # Create datagram endpoint and start serving
-    #print(transport, protocol)
-
     await loop()  # Enter main loop of program
-
     transport.close()  # Clean up serve endpoint
 
 
-ip = "0.0.0.0"
-port = 65001
+i2c_bus = busio.I2C(settings.SCL, settings.SDA)
+trellis = NeoTrellis(i2c_bus)
+
+dispatcher = dispatcher.Dispatcher()
+dispatcher.set_default_handler(default_handler)
 
 salute()
 asyncio.run(init_main())
+
