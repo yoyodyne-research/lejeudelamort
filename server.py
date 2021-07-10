@@ -43,7 +43,14 @@ def salute():
     murica.lower_flag(trellis)
     time.sleep(1)
 
-def blink(event):
+
+def grad(gamma=1.0):
+    for i in range(16):
+        v = int(pow(i / 16, gamma) * 256);
+        trellis.pixels[i] = (v, v, v);
+
+
+def button_event_receiver(event):
     # this will be called when button events are received
     address = "/1/push{}".format(event.number+1)
     # turn the LED on when a rising edge is detected
@@ -62,7 +69,7 @@ def default_handler(addr, r, g, b):
     if not enabled:
         return
     i = int(re.match('/1/push(\d+)', addr).groups()[0]) - 1
-    c = (int(r * 150), int(g * 150), int(b * 150)) 
+    c = (int(r * 25), int(g*25), int(b * 25)) 
     trellis.pixels[i] = c
 
 
@@ -71,7 +78,7 @@ async def loop():
         # call the sync function call any triggered callbacks
         trellis.sync()
         # the trellis can only be read every 17 milliseconds or so
-        await asyncio.sleep(0.016)
+        await asyncio.sleep(0.1)
 
 
 async def init_main():
@@ -87,6 +94,12 @@ trellis = NeoTrellis(i2c_bus)
 dispatcher = dispatcher.Dispatcher()
 dispatcher.set_default_handler(default_handler)
 
-salute()
+#salute()
+grad(1.0)
+time.sleep(4)
+grad(2.0)
+time.sleep(4)
+grad(3.0)
+time.sleep(4)
 asyncio.run(init_main())
 
