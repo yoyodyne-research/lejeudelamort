@@ -68,8 +68,10 @@ def button_event_receiver(event):
 def default_handler(addr, r, g, b):
     if not enabled:
         return
+    rmax = 256
+    gamma = 3.0
     i = int(re.match('/1/push(\d+)', addr).groups()[0]) - 1
-    c = (int(r * 25), int(g*25), int(b * 25)) 
+    c = (int(pow(r, gamma) * rmax), int(pow(g, gamma) * rmax), int(pow(b, gamma) * rmax))
     trellis.pixels[i] = c
 
 
