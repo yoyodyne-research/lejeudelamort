@@ -30,6 +30,7 @@ sys.path.pop()
 
 ip = "0.0.0.0"        # localhost
 port = 65001
+gamma = 2.0
 
 # create the trellis
 client = udp_client.SimpleUDPClient(ip, port)
@@ -44,7 +45,7 @@ def salute():
     time.sleep(1)
 
 
-def grad(gamma=1.0):
+def grad(gamma=gamma):
     for i in range(16):
         v = int(pow(i / 16, gamma) * 256);
         trellis.pixels[i] = (v, v, v);
@@ -69,7 +70,6 @@ def default_handler(addr, r, g, b):
     if not enabled:
         return
     rmax = 256
-    gamma = 3.0
     i = int(re.match('/1/push(\d+)', addr).groups()[0]) - 1
     c = (int(pow(r, gamma) * rmax), int(pow(g, gamma) * rmax), int(pow(b, gamma) * rmax))
     trellis.pixels[i] = c
@@ -98,10 +98,10 @@ dispatcher.set_default_handler(default_handler)
 
 #salute()
 grad(1.0)
-time.sleep(4)
+time.sleep(2)
 grad(2.0)
-time.sleep(4)
+time.sleep(2)
 grad(3.0)
-time.sleep(4)
+time.sleep(2)
 asyncio.run(init_main())
 
