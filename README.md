@@ -10,7 +10,15 @@ Say you put that Python at /opt/python .
     virtualenv -p /opt/python/bin/python3 venv
     . venv/bin/activate
     pip3 install -r requirements.txt
-    python3 server.py
+
+then you're ready to
+
+    python3 scripts/server.py
+
+or
+
+    ./server
+
 
 ## Inspecting I2C
 ```
@@ -18,4 +26,4 @@ i2cdetect -y -r 1
 i2cdetect -y -r 2
 ```
 
-![Bruce](legod.jpg)
+![Bruce](etc/legod.jpg)

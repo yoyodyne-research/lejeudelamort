@@ -8,5 +8,5 @@ then
 	exit 100
 fi
 
-venv/bin/python server.py
+venv/bin/python scripts/server.py
 

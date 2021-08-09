@@ -17,10 +17,10 @@ from adafruit_blinka.board.beagleboard import beaglebone_black
 from pythonosc import dispatcher
 from pythonosc import osc_server
 from pythonosc import udp_client
-import murica
 
 sys.path.append('.')
-import settings
+from lejeudelamort import murica
+from lejeudelamort import settings
 sys.path.pop()
 
 #ip = "192.168.1.65"  # nori

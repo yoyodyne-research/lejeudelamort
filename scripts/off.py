@@ -13,7 +13,7 @@ import board
 import busio
 
 sys.path.append('.')
-import settings
+from lejeudelamort import settings
 sys.path.pop()
 
 i2c_bus = busio.I2C(settings.SCL, settings.SDA)
