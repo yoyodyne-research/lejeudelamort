@@ -3,10 +3,11 @@ echo starting...
 
 if [ ${VIRTUAL_ENV}empty != empty ]
 then
-	echo This command is meant to be run outside the venv.
+	echo This command is meant to be run outside any venv
+	echo and expects an installed venv at $HOME/venv.
 	echo Aborting.
 	exit 100
 fi
 
-venv/bin/python scripts/server.py
+$HOME/venv/bin/python3 scripts/server.py
 
