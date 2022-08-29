@@ -5,9 +5,9 @@ This guy is specially wired to work with
 https://github.com/yoyodyne-research/gameofdeath
 
 You need Python 3.7 or later for the Bela to get the correct `asyncio`.
-Say you put that Python at /opt/python .
+Say you put that Python 3.9 at /opt/python3.9 .
 
-    virtualenv -p /opt/python/bin/python3 venv
+    /opt/python/bin/python3.9 -m venv venv
     . venv/bin/activate
     pip3 install -r requirements.txt
 
@@ -15,15 +15,22 @@ then you're ready to
 
     python3 scripts/server.py
 
-or
+when in the venv or
 
     ./server
 
+when you are not in the venv.
+
 
 ## Inspecting I2C
+
 ```
 i2cdetect -y -r 1
 i2cdetect -y -r 2
 ```
 
+and look for a non-dashed entry.
+
+
 ![Bruce](etc/legod.jpg)
+
