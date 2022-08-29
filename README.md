@@ -11,6 +11,10 @@ Say you put that Python 3.9 at /opt/python3.9 .
     . venv/bin/activate
     pip3 install -r requirements.txt
 
+If you are on PEPPER,
+
+    export PEPPER=1
+
 then you're ready to
 
     python3 scripts/server.py
