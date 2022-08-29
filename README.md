@@ -29,7 +29,7 @@ i2cdetect -y -r 1
 i2cdetect -y -r 2
 ```
 
-and look for a non-dashed entry.
+and look for an entry at 2e.
 
 
 ![Bruce](etc/legod.jpg)
