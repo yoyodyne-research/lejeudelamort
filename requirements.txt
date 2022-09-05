@@ -1,4 +1,2 @@
 python-osc
 adafruit-circuitpython-neotrellis
-Adafruit_BBIO
-
