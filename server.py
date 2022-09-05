@@ -1,52 +1,31 @@
+# Receives OSC messages from this Bela at port 65001.
+# Uses 0/1 on message /1/push{event} as button unlit/lit.
+
+# Portions of code adapted from:
 # SPDX-FileCopyrightText: 2021 ladyada for Adafruit Industries
 # SPDX-License-Identifier: MIT
-# alterations 2021 org.yoyodyne
 
-# Send to and receive from Bela project 'osc'.
-# Match IP addrs with bela and use neotrellis template.
+# 2021-2022 org.yoyodyne Yoyodyne Research
 
 import asyncio
+import logging
+import os
 import re
-import sys
 import time
 
+from adafruit_blinka.board.beagleboard import beaglebone_black
+from adafruit_neotrellis.neotrellis import NeoTrellis
 from board import SCL, SDA
 import busio
-from adafruit_neotrellis.neotrellis import NeoTrellis
-from adafruit_blinka.board.beagleboard import beaglebone_black
 from pythonosc import dispatcher
 from pythonosc import osc_server
 from pythonosc import udp_client
 
-sys.path.append('.')
-from lejeudelamort import murica
-from lejeudelamort import settings
-sys.path.pop()
-
-#ip = "192.168.1.65"  # nori
-#ip = "192.168.1.71"  # bela
-#port = 65002
-ip = "0.0.0.0"        # localhost
-port = 65001
-
-color_press = (200,200,200)
-color_clear = (0,0,0)
-gamma = 2.0
-
-# create the trellis
-client = udp_client.SimpleUDPClient(ip, port)
-sleeptime = 0.01
-enabled = True
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger('server')
 
 
-def salute():
-    murica.raise_flag(trellis)
-    time.sleep(1)
-    murica.lower_flag(trellis)
-    time.sleep(1)
-
-
-def grad(gamma=gamma):
+def grad(gamma:float):
     """ Intensity gradient from upper left to lower right.
         Gamma is tweaked so that it looks gradual. """
     for i in range(16):
@@ -55,23 +34,26 @@ def grad(gamma=gamma):
 
 
 def clear():
+    """ set all pixels to black """
     for i in range(16):
         trellis.pixels[i] = color_clear
 
 
 def button_event_receiver(event):
-    """ respond to OSC message /1/push{event} """
+    """ respond to OSC message /1/push{event}
+        by lighting up button {event} where
+        event is a number from 1 to 16 """
     # this will be called when button events are received
     address = "/1/push{}".format(event.number+1)
     # turn the LED on when a rising edge is detected
     if event.edge == NeoTrellis.EDGE_RISING:
         trellis.pixels[event.number] = color_press
-        #print('sending 1 to {}'.format(address))
+        logger.debug('sending 1 to {}'.format(address))
         client.send_message(address, 1)
     # turn the LED off when a rising edge is detected
     elif event.edge == NeoTrellis.EDGE_FALLING:
         trellis.pixels[event.number] = color_clear
-        #print('sending 0 to {}'.format(address))
+        logger.debug('sending 0 to {}'.format(address))
         client.send_message(address, 0)
 
 
@@ -84,15 +66,10 @@ def default_handler(addr, val):
     j = int(pow(val, gamma) * scale);
     trellis.pixels[i] = (j,j,j)
 
-    #if g > 0:
-        #trellis.pixels[i] = (200,100,100)
-    #else:
-        #trellis.pixels[i] = (0,0,0)
-
 
 async def loop():
     while True:
-        # call the sync function call any triggered callbacks
+        # call any triggered callbacks
         trellis.sync()
         # the trellis can only be read every 17 milliseconds or so
         await asyncio.sleep(0.1)
@@ -100,24 +77,49 @@ async def loop():
 
 async def init_main():
     server = osc_server.AsyncIOOSCUDPServer((ip, port), dispatcher, asyncio.get_event_loop())
-    transport, protocol = await server.create_serve_endpoint()  # Create datagram endpoint and start serving
-    await loop()  # Enter main loop of program
-    transport.close()  # Clean up serve endpoint
+    transport, protocol = await server.create_serve_endpoint()
+    await loop()
+    transport.close()
 
 
-i2c_bus = busio.I2C(settings.SCL, settings.SDA)
+if os.environ.get('PEPPER'):
+  # switch to I2C interface 1, used by Bela Pepper
+  SCL = beaglebone_black.pin.I2C1_SCL
+  SDA = beaglebone_black.pin.I2C1_SDA
+
+ip = '0.0.0.0'        # localhost
+port = os.environ.get('OSC_PORT') or 65001
+
+color_press = (200,200,200)
+color_clear = (0,0,0)
+gamma = 2.0
+
+# create the trellis
+client = udp_client.SimpleUDPClient(ip, port)
+sleeptime = 0.01
+enabled = True
+
+i2c_bus = busio.I2C(SCL, SDA)
 trellis = NeoTrellis(i2c_bus)
 
 dispatcher = dispatcher.Dispatcher()
 dispatcher.set_default_handler(default_handler)
 
-#salute()
+logging.info('starting server')
+logging.info('listening on {}:{}'.format(ip, port))
+logging.info('drawing gamma gradient 1.0')
 grad(1.0)
 time.sleep(2)
+logging.info('drawing gamma gradient 2.0')
 grad(2.0)
 time.sleep(2)
+logging.info('drawing gamma gradient 3.0')
 grad(3.0)
 time.sleep(2)
 clear()
-asyncio.run(init_main())
+logging.info('done drawing gamma gradients')
 
+logging.info('waiting for events')
+logging.info('press Ctrl-C to quit')
+
+asyncio.run(init_main())
