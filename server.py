@@ -11,6 +11,7 @@ import asyncio
 import logging
 import os
 import re
+import signal
 import time
 
 from adafruit_blinka.board.beagleboard import beaglebone_black
@@ -31,6 +32,20 @@ def grad(gamma:float):
     for i in range(16):
         v = int(pow(i/16,gamma)*256)
         trellis.pixels[i] = (v,v,v)
+
+
+def grads():
+    logging.info('drawing gamma gradient 1.0')
+    grad(1.0)
+    time.sleep(2)
+    logging.info('drawing gamma gradient 2.0')
+    grad(2.0)
+    time.sleep(2)
+    logging.info('drawing gamma gradient 3.0')
+    grad(3.0)
+    time.sleep(2)
+    clear()
+    logging.info('done drawing gamma gradients')
 
 
 def clear():
@@ -104,21 +119,10 @@ trellis = NeoTrellis(i2c_bus)
 
 dispatcher = dispatcher.Dispatcher()
 dispatcher.set_default_handler(default_handler)
+dispatcher.map('/1', default_handler)
 
 logging.info('starting server')
 logging.info('listening on {}:{}'.format(ip, port))
-logging.info('drawing gamma gradient 1.0')
-grad(1.0)
-time.sleep(2)
-logging.info('drawing gamma gradient 2.0')
-grad(2.0)
-time.sleep(2)
-logging.info('drawing gamma gradient 3.0')
-grad(3.0)
-time.sleep(2)
-clear()
-logging.info('done drawing gamma gradients')
-
 logging.info('waiting for events')
 logging.info('press Ctrl-C to quit')
 
