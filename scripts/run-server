@@ -1,5 +1,4 @@
-#!/usr/bin/env sh
-echo starting...
+#!/usr/bin/env bash
 
 if [ ${VIRTUAL_ENV}empty != empty ]
 then
@@ -9,5 +8,7 @@ then
 	exit 100
 fi
 
-$HOME/venv/bin/python3 scripts/server.py
+source venv/bin/activate
+echo starting...
+python3 scripts/run-server.py
 
