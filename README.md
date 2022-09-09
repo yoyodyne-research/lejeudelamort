@@ -36,5 +36,14 @@ i2cdetect -y -r 2
 
 and look for an entry at `2e`.
 
+## systemd
+
+Assumption: you cloned to /root/lejeudelamort.
+
+    cp lejeudelamort.service /etc/systemd/system
+    systemctl daemon reload
+    systemctl start lejeudelamort
+    systemctl status lejeudelamort
+
 
 ![Bruce](etc/legod.jpg)
