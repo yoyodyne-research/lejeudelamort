@@ -46,4 +46,4 @@ Assumption: you cloned to /root/lejeudelamort.
     systemctl status lejeudelamort
 
 
-![Bruce](etc/legod.jpg)
+![Bruce](legod.jpg)
