@@ -21,7 +21,7 @@ If you are on PEPPER,
 
 then you're ready to
 
-    python3 scripts/run-server.py
+    python3 gameofdeath.py
 
 The neotrellis will light up a grad 3 times at varying gamma and then go black wating for OSC messages of the form `/1/push<n>`, where n is the button number.
 
@@ -46,4 +46,4 @@ Assumption: you cloned to /root/lejeudelamort.
     systemctl status lejeudelamort
 
 
-![Bruce](legod.jpg)
+![Bruce](bruce.jpg)

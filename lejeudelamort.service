@@ -1,12 +1,11 @@
 
 [Unit]
-Description=Yoyodyne Neotrellis OSC service
+Description=Yoyodyne Neotrellis
 After=network.target
 
 [Service]
 Type=simple
-#ExecStart=/bin/pwd
-ExecStart=/root/lejeudelamort/server
+ExecStart=/root/lejeudelamort/systemd-service.py
 WorkingDirectory=/root/lejeudelamort
 
 [Install]
