@@ -39,3 +39,4 @@ while True:
         else:
             trellis.pixels[i] = COLOR4
     i = (i + 1) % 16
+    time.sleep(1)
