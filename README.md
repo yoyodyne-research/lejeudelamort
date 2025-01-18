@@ -1,6 +1,6 @@
 # lejeudelamort
 
-An OSC server that drives an Adafruit Neotrellis.
+An OSC server that drives an Adafruit Neotrellis in order to run the Game of Life (Death, actually) on it.
 
 This guy is specially wired to work with
 
