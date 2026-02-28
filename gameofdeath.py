@@ -1,9 +1,5 @@
-# Receives OSC messages from this Bela at port 65001.
-# Uses 0/1 on message /1/push{event} as button unlit/lit.
 
 # Portions of code adapted from:
-# SPDX-FileCopyrightText: 2021 ladyada for Adafruit Industries
-# SPDX-License-Identifier: MIT
 
 # 2021-2022 org.yoyodyne Yoyodyne Research
 
@@ -14,7 +10,6 @@ import re
 import signal
 import time
 
-from adafruit_blinka.board.beagleboard import beaglebone_black
 from adafruit_neotrellis.neotrellis import NeoTrellis
 from board import SCL, SDA
 import busio
@@ -77,7 +72,7 @@ def default_handler(addr, val):
         return
     scale = 256   # 8-bit max intensity
     gamma = 2.0  # gamma-ish
-    i = int(re.match('/1/push(\d+)', addr).groups()[0]) - 1
+    i = int(re.match('/1/push([0-9]+)', addr).groups()[0]) - 1
     j = int(pow(val, gamma) * scale);
     trellis.pixels[i] = (j,j,j)
 
@@ -95,12 +90,6 @@ async def init_main():
     transport, protocol = await server.create_serve_endpoint()
     await loop()
     transport.close()
-
-
-if os.environ.get('PEPPER'):
-  # switch to I2C interface 1, used by Bela Pepper
-  SCL = beaglebone_black.pin.I2C1_SCL
-  SDA = beaglebone_black.pin.I2C1_SDA
 
 ip = '0.0.0.0'        # localhost
 port = os.environ.get('OSC_PORT') or 65001

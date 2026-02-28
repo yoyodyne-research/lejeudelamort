@@ -13,7 +13,6 @@ import os
 import sys
 import time
 
-from adafruit_blinka.board.beagleboard import beaglebone_black
 from adafruit_neotrellis.neotrellis import NeoTrellis
 from board import SCL, SDA
 import busio
@@ -24,9 +23,6 @@ COLOR2 = (70,40,20)
 COLOR3 = (60,30,10)
 COLOR4 = (50,20,0)
 
-if os.environ.get('PEPPER'):
-    SCL = beaglebone_black.pin.I2C1_SCL
-    SDA = beaglebone_black.pin.I2C1_SDA
 i2c_bus = busio.I2C(SCL, SDA)
 
 trellis = NeoTrellis(i2c_bus)
