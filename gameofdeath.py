@@ -1,9 +1,5 @@
-# Receives OSC messages from this Bela at port 65001.
-# Uses 0/1 on message /1/push{event} as button unlit/lit.
 
 # Portions of code adapted from:
-# SPDX-FileCopyrightText: 2021 ladyada for Adafruit Industries
-# SPDX-License-Identifier: MIT
 
 # 2021-2022 org.yoyodyne Yoyodyne Research
 
@@ -11,9 +7,9 @@ import asyncio
 import logging
 import os
 import re
+import signal
 import time
 
-from adafruit_blinka.board.beagleboard import beaglebone_black
 from adafruit_neotrellis.neotrellis import NeoTrellis
 from board import SCL, SDA
 import busio
@@ -31,6 +27,20 @@ def grad(gamma:float):
     for i in range(16):
         v = int(pow(i/16,gamma)*256)
         trellis.pixels[i] = (v,v,v)
+
+
+def grads():
+    logging.info('drawing gamma gradient 1.0')
+    grad(1.0)
+    time.sleep(2)
+    logging.info('drawing gamma gradient 2.0')
+    grad(2.0)
+    time.sleep(2)
+    logging.info('drawing gamma gradient 3.0')
+    grad(3.0)
+    time.sleep(2)
+    clear()
+    logging.info('done drawing gamma gradients')
 
 
 def clear():
@@ -62,7 +72,7 @@ def default_handler(addr, val):
         return
     scale = 256   # 8-bit max intensity
     gamma = 2.0  # gamma-ish
-    i = int(re.match('/1/push(\d+)', addr).groups()[0]) - 1
+    i = int(re.match('/1/push([0-9]+)', addr).groups()[0]) - 1
     j = int(pow(val, gamma) * scale);
     trellis.pixels[i] = (j,j,j)
 
@@ -81,12 +91,6 @@ async def init_main():
     await loop()
     transport.close()
 
-
-if os.environ.get('PEPPER'):
-  # switch to I2C interface 1, used by Bela Pepper
-  SCL = beaglebone_black.pin.I2C1_SCL
-  SDA = beaglebone_black.pin.I2C1_SDA
-
 ip = '0.0.0.0'        # localhost
 port = os.environ.get('OSC_PORT') or 65001
 
@@ -104,21 +108,10 @@ trellis = NeoTrellis(i2c_bus)
 
 dispatcher = dispatcher.Dispatcher()
 dispatcher.set_default_handler(default_handler)
+dispatcher.map('/1', default_handler)
 
 logging.info('starting server')
 logging.info('listening on {}:{}'.format(ip, port))
-logging.info('drawing gamma gradient 1.0')
-grad(1.0)
-time.sleep(2)
-logging.info('drawing gamma gradient 2.0')
-grad(2.0)
-time.sleep(2)
-logging.info('drawing gamma gradient 3.0')
-grad(3.0)
-time.sleep(2)
-clear()
-logging.info('done drawing gamma gradients')
-
 logging.info('waiting for events')
 logging.info('press Ctrl-C to quit')
 
