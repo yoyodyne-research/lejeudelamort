@@ -2,3 +2,8 @@
 __pycache__
 venv
 
+
+
+# Added by cargo
+
+/target

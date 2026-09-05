@@ -1,0 +1,13 @@
+[package]
+name = "lejeudelamort"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+adafruit-seesaw = "0.5" # check crates.io for the latest release
+# If running on Linux:
+linux-embedded-hal = "0.4"
+
+[[bin]]
+name = "lejeudelamort"
+path = "main.rs"
